@@ -101,12 +101,12 @@ class Newscatcher:
 
                 if len(db.execute(sql).fetchall()) > 0:
                     db.close()
-                    raise AssertionError('Topic is not supported')
+                    raise AssertionError(f'Topic is not supported: {self.topic}')
                 else:
-                    raise AssertionError('Website is not supported')
+                    raise AssertionError(f'Website is not supported: {self.url}')
                     db.close()
             else:
-                raise AssertionError('Website is not supported')
+                raise AssertionError(f'Website is not supported: {self.url}')
 
         if feed['entries'] == []:
             db.close()
@@ -161,12 +161,12 @@ class Newscatcher:
 
                 if len(db.execute(sql).fetchall()) > 0:
                     db.close()
-                    raise AssertionError('Topic is not supported')
+                    raise AssertionError(f'Topic is not supported: {self.topic}')
                 else:
                     db.close()
-                    raise AssertionError('Website is not supported')
+                    raise AssertionError(f'Website is not supported: {self.url}')
             else:
-                raise AssertionError('Website is not supported')
+                raise AssertionError(f'Website is not supported: {self.url}')
 
         if feed['entries'] == []:
             db.close()
