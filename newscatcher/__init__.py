@@ -196,9 +196,11 @@ def describe_url(website):
     website = clean_url(website)
     db = sqlite3.connect(DB_FILE, isolation_level=None)
 
-    sql = "SELECT clean_url, language, clean_country, topic_unified from rss_main WHERE clean_url = '{}' and main == 1 ".format(
+    sql = "SELECT clean_url, language, clean_country, topic_unified, rss_url from rss_main WHERE clean_url = '{}' and main == 1 ".format(
         website)
     results = db.execute(sql).fetchone()
+    if results is None:
+        raise AssertionError(f"No url in database for: {website}")
     main = results[-1]
 
     if main == None:
@@ -213,7 +215,7 @@ def describe_url(website):
     topics = db.execute(sql).fetchall()
     topics = [x[0] for x in topics]
 
-    ret = {'url': results[0], 'language': results[1], 'country': results[2], 'main_topic': main, 'topics': topics}
+    ret = {'url': results[0], 'language': results[1], 'country': results[2], 'main_topic': main, 'topics': topics, 'rss_url': results[4] }
 
     return ret
 
@@ -265,3 +267,17 @@ def urls(topic=None, language=None, country=None):
 
     db.close()
     return [x[0] for x in ret]
+
+def add_url(url, rss_url, topic="news", language="en", country="US", main=True):
+    db = sqlite3.connect(DB_FILE, isolation_level=None)
+    main = 1 if main else 0
+    sql = f'INSERT INTO rss_main (clean_url, language, topic_unified, main, clean_country, rss_url, GlobalRank) VALUES ("{url}", "{language}", "{topic}", {main}, "{country}", "{rss_url}", 0)'
+    db.execute(sql)
+
+def remove_url(url, topic=None):
+    db = sqlite3.connect(DB_FILE, isolation_level=None)
+    sql = f'DELETE FROM rss_main WHERE clean_url="{url}"'
+    if topic:
+        sql += f' and topic_unified="{topic}"'
+    db.execute(sql)
+
