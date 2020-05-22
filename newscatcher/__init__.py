@@ -74,8 +74,8 @@ class Newscatcher:
 
     def __init__(self, website, topic=None):
         # init with given params
-        website = website.lower()
-        self.url = clean_url(website)
+        self.website = website.lower()
+        self.url = clean_url(self.website)
         self.topic = topic
 
     def get_headlines(self, n=None):
@@ -103,10 +103,10 @@ class Newscatcher:
                     db.close()
                     raise AssertionError(f'Topic is not supported: {self.topic}')
                 else:
-                    raise AssertionError(f'Website is not supported: {self.url}')
+                    raise AssertionError(f'Website is not supported: {self.website}')
                     db.close()
             else:
-                raise AssertionError(f'Website is not supported: {self.url}')
+                raise AssertionError(f'Website is not supported: {self.website}')
 
         if feed['entries'] == []:
             db.close()
@@ -164,9 +164,9 @@ class Newscatcher:
                     raise AssertionError(f'Topic is not supported: {self.topic}')
                 else:
                     db.close()
-                    raise AssertionError(f'Website is not supported: {self.url}')
+                    raise AssertionError(f'Website is not supported: {self.website}')
             else:
-                raise AssertionError(f'Website is not supported: {self.url}')
+                raise AssertionError(f'Website is not supported: {self.website}')
 
         if feed['entries'] == []:
             db.close()
