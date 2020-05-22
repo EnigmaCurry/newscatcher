@@ -101,20 +101,16 @@ class Newscatcher:
 
                 if len(db.execute(sql).fetchall()) > 0:
                     db.close()
-                    print('Topic is not supported')
-                    return
+                    raise AssertionError('Topic is not supported')
                 else:
-                    print('Website is not supported')
-                    return
+                    raise AssertionError('Website is not supported')
                     db.close()
             else:
-                print('Website is not supported')
-                return
+                raise AssertionError('Website is not supported')
 
         if feed['entries'] == []:
             db.close()
-            print('\nNo headlines found check internet connection or query parameters\n')
-            return
+            raise AssertionError('\nNo headlines found check internet connection or query parameters\n')
 
         title_list = []
         for article in feed['entries']:
@@ -165,19 +161,16 @@ class Newscatcher:
 
                 if len(db.execute(sql).fetchall()) > 0:
                     db.close()
-                    print('Topic is not supported')
-                    return
+                    raise AssertionError('Topic is not supported')
                 else:
-                    print('Website is not supported')
-                    return
                     db.close()
+                    raise AssertionError('Website is not supported')
             else:
-                print('Website is not supported')
-                return
+                raise AssertionError('Website is not supported')
 
         if feed['entries'] == []:
             db.close()
-            print('\nNo results found check internet connection or query parameters\n')
+            raise AssertionError('\nNo results found check internet connection or query parameters\n')
             return
 
         if n == None or len(feed['entries']) <= n:
@@ -203,13 +196,8 @@ def describe_url(website):
         raise AssertionError(f"No url in database for: {website}")
     main = results[-1]
 
-    if main == None:
-        print('\nWebsite not supported\n')
-        return
-
-    if len(main) == 0:
-        print('\nWebsite note supported\n')
-        return
+    if main == None or len(main) == 0:
+        raise AssertionError(f'Website not supported: {website}')
 
     sql = "SELECT DISTINCT topic_unified from rss_main WHERE clean_url == '{}'".format(website)
     topics = db.execute(sql).fetchall()
@@ -262,8 +250,7 @@ def urls(topic=None, language=None, country=None):
 
     ret = db.execute(sql).fetchall()
     if len(ret) == 0:
-        print('\nNo websites found for given parameters\n')
-        return
+        raise AssertionError('\nNo websites found for given parameters\n')
 
     db.close()
     return [x[0] for x in ret]
